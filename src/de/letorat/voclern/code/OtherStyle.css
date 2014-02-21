@@ -1,0 +1,15 @@
+.tab {
+  -fx-background-color: grey;
+}
+
+.tab:selected {
+  -fx-background-color: lightgrey;
+}
+
+.tab-pane .tab-content-area{
+  -fx-background-color: lightgrey;
+}
+
+.tab-pane *.tab-header-background {
+  -fx-background-color: white;
+}

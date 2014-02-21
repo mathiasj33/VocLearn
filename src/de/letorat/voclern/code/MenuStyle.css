@@ -1,0 +1,171 @@
+.tab {
+  -fx-background-color: linear-gradient(chartreuse 0%, lawngreen 25%, green 100%);
+}
+
+.tab:selected {
+  -fx-background-color: linear-gradient(green 0%, lawngreen 75%, chartreuse 100%);
+}
+
+.tab-pane .tab-content-area{
+  -fx-background-color: linear-gradient(chartreuse 0%, lawngreen 25%, green 100%);
+}
+
+.tab-pane *.tab-header-background {
+  -fx-background-color: linear-gradient(to left,greenyellow 0%, yellow 100%);
+}
+
+#bearbeitenButton {
+  -fx-background-color: green;
+}
+
+#bearbeitenButton:hover {
+  -fx-background-color: forestgreen;
+}
+
+#updateVBox {
+	-fx-background-color: linear-gradient(chartreuse 0%, lawngreen 25%, green 100%);
+}
+
+.button {
+  -fx-background-color: linear-gradient(chartreuse 0%, lawngreen 25%, green 100%);
+}
+
+.button:hover {
+  -fx-background-color: linear-gradient(green 0%, lawngreen 75%, chartreuse 100%);
+}
+
+.text-area {
+  -fx-background-color: linear-gradient(chartreuse 0%, lawngreen 25%, green 100%);
+  -fx-border-style: solid;
+  -fx-border-width: 1px;
+  -fx-border-color: darkgreen;
+  -fx-font-size: 14pt;
+}
+
+.text-field {
+  -fx-background-color: linear-gradient(chartreuse 0%, lawngreen 25%, green 100%);
+  -fx-border-style: solid;
+  -fx-border-width: 1px;
+  -fx-border-color: darkgreen;
+}
+
+.table-view {
+  -fx-background-color: lawngreen;
+}
+
+.table-row-cell:empty {
+    -fx-background-color: lawngreen;
+}
+
+.table-row-cell:empty .table-cell {
+    -fx-border-width: 0px;
+}
+
+.table-row-cell {
+  -fx-background-color: lawngreen;
+}
+
+.table-view:focused .table-row-cell:filled:selected, .table-view:row-selection .table-row-cell:filled:hover:selected {
+    -fx-background: -fx-accent;
+    -fx-background-color: -fx-selection-bar;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.table-view:focused .table-row-cell:filled:focused:selected:hover {
+    -fx-background: -fx-accent;
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
+    -fx-background-insets: 0, 1, 2;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.table-view:row-selection .table-row-cell:filled:hover { 
+    -fx-background: -fx-accent;
+    -fx-background-color: -fx-selection-bar;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.table-row-cell .table-cell {
+  -fx-border-width: 1px;
+  -fx-border-style: solid;
+  -fx-border-color: darkgreen;
+}
+
+.table-view .column-header {
+  -fx-background-color: limegreen;
+  -fx-border-width: 1px;
+  -fx-border-style: solid;
+  -fx-border-color: darkgreen;
+}
+
+.check-box .box{
+  -fx-background-color: linear-gradient(chartreuse 0%, lawngreen 25%, green 100%);
+}
+
+.check-box:focused {
+    -fx-color: -fx-focused-base;
+}
+
+.check-box:focused .box {
+    -fx-background-insets: -1.4, 0, 1, 2;
+    -fx-background-radius: 3.4, 2, 1, 1;
+}
+
+.check-box:hover .box {
+    -fx-border-style: solid;
+    -fx-border-width: 3px;
+    -fx-border-color: cyan;
+}
+
+.table-view *.scroll-bar:horizontal *.increment-button,
+.table-view *.scroll-bar:horizontal *.decrement-button {
+    -fx-background-color: green;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.table-view .scroll-bar:vertical .thumb {
+  -fx-background-color: green;
+}
+
+.table-view .scroll-bar:vertical .track {
+  -fx-background-color: greenyellow;
+}
+
+.table-view *.scroll-bar:horizontal *.increment-arrow, 
+.table-view *.scroll-bar:horizontal *.decrement-arrow {
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-shape: null;
+}
+
+.scroll-bar .track {
+    -fx-background-color: greenyellow;
+    -fx-border-color:transparent;
+}
+.scroll-bar .increment-arrow, .scroll-bar .decrement-arrow {
+    -fx-background-color: greenyellow;
+    -fx-padding: 3;
+}
+
+.scroll-bar .increment-button, .scroll-bar .decrement-button {
+    -fx-background-color: green
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: green;
+}
+
+.context-menu {
+	-fx-background-color: green;
+}
+
+.context-menu .menu-item:hover {
+	-fx-background-color: transparent;
+}
+
+.context-menu .menu-item:focused {
+	-fx-background-color: transparent;
+}
