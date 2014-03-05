@@ -1,4 +1,4 @@
-package de.letorat.voclern.code;
+package de.letorat.voclearn.code;
 
 import java.io.Serializable;
 
