@@ -147,14 +147,14 @@ public class Gui extends Application {
 	    folder.delete();
 	}
 	
-	private void checkForUpdates() { //32 und 64 bit
+	private void checkForUpdates() {
 		Thread t  = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				Socket textReadSocket = new Socket();
 				try {
-					textReadSocket.connect(new InetSocketAddress("localhost", 50001), 2000);
+					textReadSocket.connect(new InetSocketAddress("letorat.selfhost.bz", 50001), 2000);
 					writer = new PrintWriter(new OutputStreamWriter(textReadSocket.getOutputStream()), true);
 					BufferedReader reader = new BufferedReader(new InputStreamReader(textReadSocket.getInputStream()));
 					writer.println("$version" + VERSION);
@@ -274,6 +274,7 @@ public class Gui extends Application {
 					threads.add(t);
 				}
 			else if(e.getSource() == no) {
+				writer.println("$doNotUpdate");
 				updateStage.close();
 			}
 			else {
@@ -285,7 +286,7 @@ public class Gui extends Application {
 	        FileOutputStream fos = null;
 	        
 	        Socket fileReadSocket = new Socket();
-	        fileReadSocket.connect(new InetSocketAddress("localhost", 50001),  2000);
+	        fileReadSocket.connect(new InetSocketAddress("letorat.selfhost.bz", 50001),  2000);
 	        PrintWriter pw = new PrintWriter(new OutputStreamWriter(fileReadSocket.getOutputStream()), true);
 	        
 	        String homeDirectory = System.getProperty("user.home");
