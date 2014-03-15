@@ -1,4 +1,4 @@
-package de.letorat.voclearn.code;
+package net.softwarepage.voclearn.code;
 
 import java.awt.Desktop;
 import java.io.BufferedOutputStream;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -51,9 +52,12 @@ public class Gui extends Application {
 	private Scene scene;
 	private Stage secondaryStage;
 	private Stage updateStage;
+	private ProgressBar pb;
 	
 	private ArrayList<Thread> threads = new ArrayList<Thread>();
 	private PrintWriter writer;
+	private int lengthOfUpdateFile;
+	private long total = 0;
 	
 	private static final double VERSION = 3.0;
 	
@@ -107,7 +111,8 @@ public class Gui extends Application {
 		tabPane.getTabs().add(menuTab);
 		tabPane.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
 		
-		scene = new Scene(tabPane,500,500);
+		//scene = new Scene(tabPane,578,500);
+		scene = new Scene(tabPane,800,150);
 		scene.getStylesheets().add(Gui.class.getResource("MenuStyle.css").toExternalForm());
 		
 		primaryStage.setScene(scene);
@@ -154,10 +159,15 @@ public class Gui extends Application {
 			public void run() {
 				Socket textReadSocket = new Socket();
 				try {
-					textReadSocket.connect(new InetSocketAddress("letorat.selfhost.bz", 50001), 2000);
+					textReadSocket.connect(new InetSocketAddress("Mathias-Server", 50001), 2000);
 					writer = new PrintWriter(new OutputStreamWriter(textReadSocket.getOutputStream()), true);
 					BufferedReader reader = new BufferedReader(new InputStreamReader(textReadSocket.getInputStream()));
 					writer.println("$version" + VERSION);
+					if(OSValidator.isWindows()) {
+						writer.println("$fileLengthwindows");
+					} else {
+						writer.println("$fileLengthnotwindows");
+					}
 					String msg;
 					while((msg = reader.readLine()) != null) {
 						if(msg.equals("$updateAvailable")) {
@@ -183,12 +193,18 @@ public class Gui extends Application {
 												e.consume();
 											}
 										});
+										updateStage.setTitle("Update available");
 										updateStage.setScene(s);
 										updateStage.initModality(Modality.APPLICATION_MODAL);
 										updateStage.getIcons().add(new Image(Gui.class.getResourceAsStream("VocLernLogo.png")));
 										updateStage.show(); 
 							      }
 							    });
+						}
+						else if(msg.contains("$fileLength")) {
+							msg = msg.replace("$fileLength", "");
+							lengthOfUpdateFile = Integer.parseInt(msg);
+							System.out.println(lengthOfUpdateFile);
 						}
 					}
 				} catch (IOException e) {
@@ -249,7 +265,7 @@ public class Gui extends Application {
 			else if(e.getSource() == yes) {
 				VBox root = new VBox(20);
 				Label label = new Label("Downloading the latest Version...");
-				ProgressBar pb = new ProgressBar();
+				pb = new ProgressBar();
 				pb.setPrefHeight(30);
 				pb.setPrefWidth(300);
 				root.getChildren().addAll(label);
@@ -261,17 +277,70 @@ public class Gui extends Application {
 				updateStage.getIcons().add(new Image(getClass().getResourceAsStream("VocLernLogo.png")));
 				updateStage.setScene(scene);
 				updateStage.show();
-					Thread t = new Thread(new Runnable() {
-						public void run() {
-							try {
-								downloadNewVersion();
-							} catch (IOException | InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-					});
-					t.start();
-					threads.add(t);
+				Task<Void> t = new Task<Void>() {
+					@Override
+					protected Void call() throws Exception {  //Downloading
+						FileOutputStream fos = null;
+				        
+				        Socket fileReadSocket = new Socket();
+				        fileReadSocket.connect(new InetSocketAddress("Mathias-Server", 50001),  2000);
+				        PrintWriter pw = new PrintWriter(new OutputStreamWriter(fileReadSocket.getOutputStream()), true);
+				        
+				        String homeDirectory = System.getProperty("user.home");
+				        String path = "";
+				        
+				        if(OSValidator.isWindows()) { 
+				        	File dir = new File(homeDirectory + "\\VocLearnTemp");
+				        	dir.mkdirs();
+				        	fos = new FileOutputStream(dir.getAbsolutePath() + "\\VocLearnSetup.exe");
+				        	pw.println("$downloadwindows");
+				        }
+				        else {
+				        	String path2 = Gui.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+				        	path = URLDecoder.decode(path2, "UTF-8");
+				        	path = new File(path).getParentFile().getAbsolutePath();
+				        	File oldFile = new File(path2);
+				        	boolean renamed = oldFile.renameTo(new File("VocLearnOld.jar"));
+				        	oldFile.deleteOnExit();
+				        	System.out.println(renamed);
+				        	fos = new FileOutputStream(path + "\\VocLearn.jar");
+				        	pw.println("$downloadnotwindows");
+				        }
+				        
+				        byte [] bytearray  = new byte [4096];
+				        InputStream is = fileReadSocket.getInputStream();
+				        BufferedOutputStream bos = new BufferedOutputStream(fos);
+				        
+				        int count;
+				        
+				        while ((count = is.read(bytearray)) > 0) {
+				        	total += count;
+				        	updateProgress(total, lengthOfUpdateFile);  //Setting the bar
+				            bos.write(bytearray, 0, count);
+				        }
+
+				        bos.flush();
+				        bos.close();
+				        fileReadSocket.close();  //finished downloading
+				        if(OSValidator.isWindows()) {
+				        	Desktop.getDesktop().open(new File(homeDirectory + "\\VocLearnTemp\\VocLearnSetup.exe"));
+							for(Thread t : threads) t.interrupt();
+				        	System.exit(0);
+				        }
+				       else {
+				        	Desktop.getDesktop().open(new File(path + "\\VocLearn.jar"));
+							for(Thread t : threads) t.interrupt();
+				        	System.exit(0);
+				        }
+				        
+						return null;
+					}
+				};
+				pb.setProgress(0);
+				pb.progressProperty().bind(t.progressProperty());
+				Thread thread = new Thread(t);
+				thread.start();
+				threads.add(thread);
 				}
 			else if(e.getSource() == no) {
 				writer.println("$doNotUpdate");
@@ -281,59 +350,5 @@ public class Gui extends Application {
 				secondaryStage.close();
 			}
 		}
-		
-		private void downloadNewVersion() throws IOException, InterruptedException {
-	        FileOutputStream fos = null;
-	        
-	        Socket fileReadSocket = new Socket();
-	        fileReadSocket.connect(new InetSocketAddress("letorat.selfhost.bz", 50001),  2000);
-	        PrintWriter pw = new PrintWriter(new OutputStreamWriter(fileReadSocket.getOutputStream()), true);
-	        
-	        String homeDirectory = System.getProperty("user.home");
-	        String path = "";
-	        
-	        if(OSValidator.isWindows()) { 
-	        	File dir = new File(homeDirectory + "\\VocLearnTemp");
-	        	dir.mkdirs();
-	        	fos = new FileOutputStream(dir.getAbsolutePath() + "\\VocLearnSetup.exe");
-	        	pw.println("$downloadwindows");
-	        }
-	        else {
-	        	String path2 = Gui.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-	        	path = URLDecoder.decode(path2, "UTF-8");
-	        	path = new File(path).getParentFile().getAbsolutePath();
-	        	File oldFile = new File(path2);
-	        	boolean renamed = oldFile.renameTo(new File("VocLearnOld.jar"));
-	        	oldFile.deleteOnExit();
-	        	System.out.println(renamed);
-	        	fos = new FileOutputStream(path + "\\VocLearn.jar");
-	        	pw.println("$downloadnotwindows");
-	        }
-	        
-	        byte [] bytearray  = new byte [4096];
-	        InputStream is = fileReadSocket.getInputStream();
-	        BufferedOutputStream bos = new BufferedOutputStream(fos);
-	        
-	        int count;
-
-	        while ((count = is.read(bytearray)) > 0) {
-	            bos.write(bytearray, 0, count);
-	        }
-
-	        bos.flush();
-	        bos.close();
-	        fileReadSocket.close();
-	        if(OSValidator.isWindows()) {
-	        	Desktop.getDesktop().open(new File(homeDirectory + "\\VocLearnTemp\\VocLearnSetup.exe"));
-				for(Thread t : threads) t.interrupt();
-	        	System.exit(0);
-	        }
-	       else {
-	        	Desktop.getDesktop().open(new File(path + "\\VocLearn.jar"));
-				for(Thread t : threads) t.interrupt();
-	        	System.exit(0);
-	        }
-	        
-	      }
 	}
 }

@@ -1,4 +1,4 @@
-package de.letorat.voclearn.code;
+package net.softwarepage.voclearn.code;
 
 public class OSValidator {
 	 

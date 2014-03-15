@@ -1,4 +1,4 @@
-package de.letorat.voclearn.code;
+package net.softwarepage.voclearn.code;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,7 +36,7 @@ public class Erstellmodus {
 		Label frage = new Label("Question:");
 		frageArea = new TextArea();
 		frageArea.addEventFilter(KeyEvent.KEY_PRESSED, new frageHandler());
-		Label antwort = new Label("Awnser:");
+		Label antwort = new Label("Anwser:");
 		antwortArea = new TextArea();
 		antwortArea.addEventFilter(KeyEvent.KEY_PRESSED, new antwortHandler());
 		naechsteKarte = new Button("Next card");

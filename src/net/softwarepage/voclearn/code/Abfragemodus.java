@@ -1,4 +1,4 @@
-package de.letorat.voclearn.code;
+package net.softwarepage.voclearn.code;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,7 +39,7 @@ public class Abfragemodus {
         laden = new Button("Load a set of cards");
 		Label frage = new Label("Question:");
 		frageArea = new TextArea();
-		Label antwort = new Label("Awnser:");
+		Label antwort = new Label("Answer:");
 		antwortArea = new TextArea();
 		button = new Button("Check");
 		
@@ -103,12 +103,12 @@ public class Abfragemodus {
 				}
 			}
 			else {
-				if(button.getText().equals("Check") && currentCard.getAwnser().contains("/")  && antwortArea.getText().contains("/")) {  //Bei einem Schrägstrich sollen alle Bedeutungen in jeder Reihenfolge funktionieren
-					String[] antworten = currentCard.getAwnser().split("/");
+				if(button.getText().equals("Check") && currentCard.getAnwser().contains("/")  && antwortArea.getText().contains("/")) {  //Bei einem Schrägstrich sollen alle Bedeutungen in jeder Reihenfolge funktionieren
+					String[] antworten = currentCard.getAnwser().split("/");
 					String[] benutzerAntworten = antwortArea.getText().split("/");
 					ArrayList<String> antwortenListe = new ArrayList<String>();
 					if(benutzerAntworten.length != antworten.length) {
-						frageArea.setText("Wrong. You wrote ''" + antwortArea.getText() + "'' instead of ''" + currentCard.getAwnser() + "''.");
+						frageArea.setText("Wrong. You wrote ''" + antwortArea.getText() + "'' instead of ''" + currentCard.getAnwser() + "''.");
 						button.setText("Next card");
 					}
 					else {
@@ -130,20 +130,20 @@ public class Abfragemodus {
 							button.setText("Next card");
 						}
 						else {
-							frageArea.setText("Wrong. You wrote ''" + antwortArea.getText() + "'' instead of ''" + currentCard.getAwnser() + "''.");
+							frageArea.setText("Wrong. You wrote ''" + antwortArea.getText() + "'' instead of ''" + currentCard.getAnwser() + "''.");
 							button.setText("Next card");
 						}
 					}
 				}
-				else if(button.getText().equals("Check") && antwortArea.getText().equalsIgnoreCase(currentCard.getAwnser())) {
+				else if(button.getText().equals("Check") && antwortArea.getText().equalsIgnoreCase(currentCard.getAnwser())) {
 					uebrig--;
 					uebrigLabel.setText("Remaining cards: " + uebrig);
 					cards.remove(currentCard);
-					frageArea.setText("Corrrect!");
+					frageArea.setText("Correct!");
 					button.setText("Next card");
 				}
 				else if(button.getText().equals("Check")) {  //Bei falscher Eingabe
-					frageArea.setText("Wrong. You wrote ''" + antwortArea.getText() + "'' instead of ''" + currentCard.getAwnser() + "''.");
+					frageArea.setText("Wrong. You wrote ''" + antwortArea.getText() + "'' instead of ''" + currentCard.getAnwser() + "''.");
 					button.setText("Next card");
 				}
 				else if(button.getText().equals("Next card")) {
@@ -181,7 +181,7 @@ public class Abfragemodus {
 			antwortArea.requestFocus();
 		}
 		else {
-			frageArea.setText("You awnsered all cards.");
+			frageArea.setText("You anwsered all cards.");
 			antwortArea.clear();
 			button.setDisable(true);
 		}
